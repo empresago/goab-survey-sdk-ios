@@ -1,4 +1,4 @@
-# Atualiza Package.swift (url + checksum) via repository_dispatch do sdk-survey-kmp.
+# Atualiza Package.swift (url + checksum) via repository_dispatch do GoAB Survey SDK.
 #
 # Payload (client_payload):
 #   version  — semver publicada (ex.: 1.0.1)
@@ -54,7 +54,7 @@ jobs:
           set -euo pipefail
           cat > Package.swift <<EOF
           // swift-tools-version: 5.9
-          // Atualizado via repository_dispatch (sdk-survey-kmp) — versão ${VERSION}
+          // Atualizado via repository_dispatch (GoAB Survey SDK) — versão ${VERSION}
 
           import PackageDescription
 

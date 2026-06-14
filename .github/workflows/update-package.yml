@@ -1,0 +1,90 @@
+# Atualiza Package.swift (url + checksum) via repository_dispatch do sdk-survey-kmp.
+#
+# Payload (client_payload):
+#   version  — semver publicada (ex.: 1.0.1)
+#   url      — URL CDN do GoABSurveySDK.xcframework.zip
+#   checksum — SHA256 do zip (64 hex)
+
+name: Atualizar Package.swift
+
+on:
+  repository_dispatch:
+    types: [update-survey-sdk-package]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goab-survey-sdk-ios-update-package
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar payload
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+          URL: ${{ github.event.client_payload.url }}
+          CHECKSUM: ${{ github.event.client_payload.checksum }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERSION:-}" ] || [ -z "${URL:-}" ] || [ -z "${CHECKSUM:-}" ]; then
+            echo "Payload incompleto. Esperado: version, url, checksum." >&2
+            exit 1
+          fi
+          if ! echo "${CHECKSUM}" | grep -Eq '^[a-f0-9]{64}$'; then
+            echo "Checksum inválido (esperado SHA256 hex 64 chars): ${CHECKSUM}" >&2
+            exit 1
+          fi
+          echo "Versão: ${VERSION}"
+          echo "URL: ${URL}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gerar Package.swift
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+          URL: ${{ github.event.client_payload.url }}
+          CHECKSUM: ${{ github.event.client_payload.checksum }}
+        run: |
+          set -euo pipefail
+          cat > Package.swift <<EOF
+          // swift-tools-version: 5.9
+          // Atualizado via repository_dispatch (sdk-survey-kmp) — versão ${VERSION}
+
+          import PackageDescription
+
+          let package = Package(
+              name: "GoABSurveySDK",
+              platforms: [.iOS(.v14)],
+              products: [
+                  .library(name: "GoABSurveySDK", targets: ["GoABSurveySDK"])
+              ],
+              targets: [
+                  .binaryTarget(
+                      name: "GoABSurveySDK",
+                      url: "${URL}",
+                      checksum: "${CHECKSUM}"
+                  )
+              ]
+          )
+          EOF
+
+      - name: Commit e push
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Package.swift
+          if git diff --staged --quiet; then
+            echo "Package.swift inalterado"
+            exit 0
+          fi
+          git commit -m "Update Package.swift v${VERSION}"
+          git push origin HEAD:master

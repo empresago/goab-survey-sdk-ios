@@ -1,10 +1,5 @@
 // swift-tools-version: 5.9
-//
-// Repositório público de releases SPM do GoAB Survey SDK (iOS).
-// Atualizado via repository_dispatch (evento update-survey-sdk-package).
-//
-// Consumo no app iOS:
-//   .package(url: "https://github.com/empresago/goab-survey-sdk-ios", branch: "master")
+// Atualizado via repository_dispatch — versão 1.0.0
 
 import PackageDescription
 
@@ -17,8 +12,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "GoABSurveySDK",
-            url: "https://devs.goab.io/ios/releases/survey-sdk/latest/GoABSurveySDK.xcframework.zip",
-            checksum: "0000000000000000000000000000000000000000000000000000000000000000"
+            url: "https://devs.goab.io/ios/releases/survey-sdk/1.0.0/GoABSurveySDK.xcframework.zip",
+            checksum: "6305ad5353df4c3412bb385ff6dd3bd0fedf42547c9bdeb773c189d30e5db97c"
         )
     ]
 )

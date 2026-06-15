@@ -17,7 +17,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "GoABSurveySDK",
-            url: "https://devs.goab.io/ios/releases/survey/latest/GoABSurveySDK.xcframework.zip",
+            url: "https://devs.goab.io/ios/releases/survey-sdk/latest/GoABSurveySDK.xcframework.zip",
             checksum: "0000000000000000000000000000000000000000000000000000000000000000"
         )
     ]

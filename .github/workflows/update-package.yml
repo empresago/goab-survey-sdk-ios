@@ -74,7 +74,7 @@ jobs:
           )
           EOF
 
-      - name: Commit e push
+      - name: Commit, tag e push
         env:
           VERSION: ${{ github.event.client_payload.version }}
         run: |
@@ -82,9 +82,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Package.swift
-          if git diff --staged --quiet; then
+          if ! git diff --staged --quiet; then
+            git commit -m "Update Package.swift v${VERSION}"
+            git push origin HEAD:master
+          else
             echo "Package.swift inalterado"
-            exit 0
           fi
-          git commit -m "Update Package.swift v${VERSION}"
-          git push origin HEAD:master
+          # Tag da versão (consumo SPM por tag: .package(from: "X.Y.Z")).
+          if git rev-parse "${VERSION}" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "${VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${VERSION} já existe."
+          else
+            git tag -a "${VERSION}" -m "Release ${VERSION}"
+            git push origin "${VERSION}"
+          fi

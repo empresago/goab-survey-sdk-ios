@@ -88,3 +88,15 @@ jobs:
           fi
           git commit -m "Update Package.swift v${VERSION}"
           git push origin HEAD:master
+
+      - name: Tag da versão
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          set -euo pipefail
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} já existe; nada a fazer."
+          else
+            git tag -a "v${VERSION}" -m "Release v${VERSION}"
+            git push origin "v${VERSION}"
+          fi

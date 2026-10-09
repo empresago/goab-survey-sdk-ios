@@ -1,5 +1,5 @@
 // swift-tools-version: 5.9
-// Atualizado via repository_dispatch — versão 1.2.0
+// Atualizado via repository_dispatch — versão 1.3.0
 
 import PackageDescription
 
@@ -12,8 +12,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "GoABSurveySDK",
-            url: "https://devs.goab.io/ios/releases/survey-sdk/1.2.0/GoABSurveySDK.xcframework.zip",
-            checksum: "c154b276c14687b3f8040354db8c9991f10907f35162871e5507ff06bc073858"
+            url: "https://devs.goab.io/ios/releases/survey-sdk/1.3.0/GoABSurveySDK.xcframework.zip",
+            checksum: "2b07a242b215d0860222e290f871e99c282547747f02d5f7e223e288021ce4e5"
         )
     ]
 )
